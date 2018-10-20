@@ -1,6 +1,7 @@
 ﻿var Game = (function () {
 	var mainCanvas = document.getElementById("mainCanvas");
-	var background = new Image();              
+	var background = new Image();
+	var player;
 
 	return {
 		init: function () {
@@ -9,6 +10,8 @@
 			background.onload = function () {
 				Game.resizeCanvas();
 			}
+			var name = prompt("Enter your name...");
+			player = new Player(name);
 		},
 
 		redraw: function () {
