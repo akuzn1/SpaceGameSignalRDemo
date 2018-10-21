@@ -14,9 +14,13 @@ namespace SpaceGameSignalRDemo.Model
 
 		public int Expirience { get; set; }
 
-		[ForeignKey("SpaceObject")]
-		public Guid SpaceObjectId { get; set; }
+		//public int Level { get; set; }
 
-		public SpaceObject SpaceObject { get; set; }
+		//public bool Active { get; set; }
+
+		[ForeignKey("SpaceObject")]
+		public Guid ShipId { get; set; }
+
+		public SpaceObject Ship { get; set; }
 	}
 }

@@ -9,9 +9,22 @@
 			background.src = 'images/backgrounds/space1.jpg';			
 			background.onload = function () {
 				Game.resizeCanvas();
-			}
+			}			
+
 			var name = prompt("Enter your name...");
 			player = new Player(name);
+
+			$.ajax({
+				type: 'POST',
+				accepts: 'application/json',
+				url: 'api/game',
+				data: JSON.stringify(name),
+				contentType: 'application/json',
+				success: function (data) {
+					alert(data.name);
+				}
+			});
+
 		},
 
 		redraw: function () {
