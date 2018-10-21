@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SpaceGameSignalRDemo.Logic;
 using SpaceGameSignalRDemo.Model;
-using System.Web.Http;
 
 namespace SpaceGameSignalRDemo.Controllers
 {
