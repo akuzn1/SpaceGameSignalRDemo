@@ -2,11 +2,34 @@
 	var mainCanvas = document.getElementById("mainCanvas");
 	var background = new Image();
 	var player;
+	var ship;
+	var spaceObjects = [];
+	var images = [];
+	var paths = [
+		'images/asteroids/asteroid1.png',
+		'images/asteroids/asteroid2.png',
+		'images/asteroids/asteroid3.png',
+		'images/ships/ship1.png',
+		'images/ships/ship2.png',
+	];
 
 	return {
 		init: function () {
 			window.addEventListener('resize', this.resizeCanvas, false);
-			background.src = 'images/backgrounds/space1.jpg';			
+
+			$('#mainCanvas').on('mousedown', function (e) {
+				var rect = mainCanvas.getBoundingClientRect();
+				var x = e.clientX - rect.left;
+				var y = e.clientY - rect.top;
+				Game.moveShipTo(x, y);
+			});
+
+			for (var i = 0; i < paths.length; i++) {
+				images[i] = new Image();
+				images[i].src = paths[i];
+			}
+
+			background.src = 'images/backgrounds/space1.jpg';
 			background.onload = function () {
 				Game.resizeCanvas();
 			}			
@@ -21,17 +44,42 @@
 				data: JSON.stringify(name),
 				contentType: 'application/json',
 				success: function (data) {
-					alert(data.name);
+					player.id = data.player.id;
+					player.expirience = data.player.experience;
+					player.shipId = data.player.shipId;
+					player.level = data.player.level;
+
+					for (var item in data.spaceObjects) {
+						spaceObjects[spaceObjects.length] = data.spaceObjects[item];
+					}
+
+					ship = Utils.getShipById(spaceObjects, player.shipId);
+
+					background.onload = function () {
+						Game.resizeCanvas();
+					}			
+					background.src = 'images/backgrounds/space' + player.level + '.jpg';
 				}
 			});
 
+		},
+
+		moveShipTo: function (x, y) {
+			if (ship != undefined) {
+				ship.x = x;
+				ship.y = y;
+				Game.redraw();
+			}
 		},
 
 		redraw: function () {
 			var ctx = mainCanvas.getContext('2d');
 			ctx.drawImage(background,
 				0, 0, background.naturalHeight, background.naturalHeight,
-				0, 0, mainCanvas.width,	mainCanvas.width * background.naturalHeight / background.naturalHeight);
+				0, 0, mainCanvas.width, mainCanvas.width * background.naturalHeight / background.naturalHeight);
+			for (var item in spaceObjects) {
+				ctx.drawImage(images[spaceObjects[item].type], spaceObjects[item].x, spaceObjects[item].y);
+			}
 		},
 
 		resizeCanvas: function () {

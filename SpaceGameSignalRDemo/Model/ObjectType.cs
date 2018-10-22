@@ -2,8 +2,10 @@
 {
 	public enum ObjectType
 	{
-		Asteroid1 = 1,
-		Asteroid2 = 2,
-		Ship1 = 100,
+		Asteroid1 = 0,
+		Asteroid2 = 1,
+		Asteroid3 = 2,
+		Ship1 = 3,
+		Ship2 = 4,
 	}
 }

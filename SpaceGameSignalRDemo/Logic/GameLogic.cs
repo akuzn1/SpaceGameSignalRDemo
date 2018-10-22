@@ -17,6 +17,7 @@ namespace SpaceGameSignalRDemo.Logic
 					player = new Player() {
 						Id = Guid.NewGuid(),
 						Login = playerName,
+						Level = 1,
 						Expirience = 0,
 					};
 					player.Ship = new SpaceObject()
@@ -26,7 +27,7 @@ namespace SpaceGameSignalRDemo.Logic
 						Y = 250,
 						Dx = 0,
 						Dy = 0,
-						Level = 1,
+						Level = player.Level,
 						Visible = true,
 						Life = 100,
 						Speed = 0,
@@ -41,7 +42,7 @@ namespace SpaceGameSignalRDemo.Logic
 				context.SaveChanges();
 
 				var all = context.SpaceObjects;
-				var objects = context.SpaceObjects.Where(p => p.Level == player.Ship.Level && p.Visible).ToList();
+				var objects = context.SpaceObjects.Where(p => p.Level == player.Level && p.Visible).ToList();
 
 				state.Player = player;
 				state.SpaceObjects = objects;
