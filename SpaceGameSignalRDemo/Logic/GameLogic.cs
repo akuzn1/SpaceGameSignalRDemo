@@ -25,12 +25,12 @@ namespace SpaceGameSignalRDemo.Logic
 						Id = Guid.NewGuid(),
 						X = 250,
 						Y = 250,
-						Dx = 0,
-						Dy = 0,
+						TargetX = 0,
+						TargetY = 0,
 						Level = player.Level,
 						Visible = true,
 						Life = 100,
-						Speed = 0,
+						Speed = 5,
 						Type = ObjectType.Ship1
 					};
 					context.Players.Add(player);

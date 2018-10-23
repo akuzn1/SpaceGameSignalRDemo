@@ -1,10 +1,10 @@
-﻿var SpaceObject = function (id, type, x, y, dx, dy, speed, life) {
+﻿var SpaceObject = function (id, type, x, y, targetX, targetY, speed, life) {
 	this.id = id;
 	this.type = type;
 	this.x = x;
 	this.y = y;
-	this.dx = dx;
-	this.dy = dy;
+	this.targetX = targetX;
+	this.targetY = targetY;
 	this.speed = speed;
 	this.life = life;
 };

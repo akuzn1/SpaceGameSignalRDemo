@@ -24,6 +24,26 @@
 				Game.moveShipTo(x, y);
 			});
 
+			setInterval(function () {
+				for (var i in spaceObjects) {
+					if ((spaceObjects[i].targetX == 0 && spaceObjects[i].targetY == 0)
+						|| (spaceObjects[i].targetX == spaceObjects[i].x && spaceObjects[i].targetY == spaceObjects[i].y))
+						continue;
+
+					var D = Math.sqrt((spaceObjects[i].targetX - spaceObjects[i].x) * (spaceObjects[i].targetX - spaceObjects[i].x) + (spaceObjects[i].targetY - spaceObjects[i].y) * (spaceObjects[i].targetY - spaceObjects[i].y));
+					var koef = spaceObjects[i].speed / D;
+					if (koef < 1) {
+						spaceObjects[i].x += (spaceObjects[i].targetX - spaceObjects[i].x) * koef;
+						spaceObjects[i].y += (spaceObjects[i].targetY - spaceObjects[i].y) * koef;
+					}
+					else {
+						spaceObjects[i].x = spaceObjects[i].targetX;
+						spaceObjects[i].y = spaceObjects[i].targetY;
+					}
+				}
+				Game.redraw();
+			}, 50);
+
 			for (var i = 0; i < paths.length; i++) {
 				images[i] = new Image();
 				images[i].src = paths[i];
@@ -66,9 +86,8 @@
 
 		moveShipTo: function (x, y) {
 			if (ship != undefined) {
-				ship.x = x;
-				ship.y = y;
-				Game.redraw();
+				ship.targetX = x;
+				ship.targetY = y;
 			}
 		},
 

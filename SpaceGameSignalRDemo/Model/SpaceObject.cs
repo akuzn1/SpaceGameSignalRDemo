@@ -17,9 +17,9 @@ namespace SpaceGameSignalRDemo.Model
 
 		public int Y { get; set; }
 
-		public int Dx { get; set; }
+		public int TargetX { get; set; }
 
-		public int Dy { get; set; }
+		public int TargetY { get; set; }
 
 		public int Speed { get; set; }
 
