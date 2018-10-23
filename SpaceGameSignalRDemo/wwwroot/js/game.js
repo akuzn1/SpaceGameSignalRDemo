@@ -97,7 +97,9 @@
 				0, 0, background.naturalHeight, background.naturalHeight,
 				0, 0, mainCanvas.width, mainCanvas.width * background.naturalHeight / background.naturalHeight);
 			for (var item in spaceObjects) {
-				ctx.drawImage(images[spaceObjects[item].type], spaceObjects[item].x, spaceObjects[item].y);
+				ctx.drawImage(images[spaceObjects[item].type],
+					spaceObjects[item].x - spaceObjects[item].width / 2,
+					spaceObjects[item].y - spaceObjects[item].height / 2);
 			}
 		},
 

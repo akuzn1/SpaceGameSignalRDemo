@@ -17,6 +17,10 @@ namespace SpaceGameSignalRDemo.Model
 
 		public int Y { get; set; }
 
+		public int Width { get; set; }
+
+		public int Height { get; set; }
+
 		public int TargetX { get; set; }
 
 		public int TargetY { get; set; }

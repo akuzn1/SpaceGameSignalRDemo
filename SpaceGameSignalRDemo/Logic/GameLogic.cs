@@ -25,6 +25,8 @@ namespace SpaceGameSignalRDemo.Logic
 						Id = Guid.NewGuid(),
 						X = 250,
 						Y = 250,
+						Width = 128,
+						Height = 128,
 						TargetX = 0,
 						TargetY = 0,
 						Level = player.Level,
