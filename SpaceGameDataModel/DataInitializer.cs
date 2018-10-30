@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 
-namespace SpaceGameSignalRDemo.Model
+namespace SpaceGameDataModel
 {
 	public static class DataInitializer
 	{
-		public static void Initialize()
+		public static void Initialize(string dbPath)
 		{
-			using (var context = new DataContext())
+			using (var context = new DataContext(dbPath))
 			{
 				if(context.SpaceObjects.Any())
 				{

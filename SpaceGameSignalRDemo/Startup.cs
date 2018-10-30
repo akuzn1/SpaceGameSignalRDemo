@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SpaceGameSignalRDemo.Model;
+using SpaceGameDataModel;
+using SpaceGameSignalRDemo.Hubs;
 
 namespace SpaceGameSignalRDemo
 {
@@ -35,9 +31,11 @@ namespace SpaceGameSignalRDemo
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+			services.AddSignalR();
+
 			services.AddDbContext<DataContext>();
 
-			DataInitializer.Initialize();
+			//DataInitializer.Initialize();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +52,14 @@ namespace SpaceGameSignalRDemo
 
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
+			app.UseSignalR(routes =>
+			{
+				routes.MapHub<GameHub>("/gameHub");
+			});
+			app.UseSignalR(routes =>
+			{
+				routes.MapHub<AdminHub>("/adminHub");
+			});
 
 			app.UseMvc();
 		}

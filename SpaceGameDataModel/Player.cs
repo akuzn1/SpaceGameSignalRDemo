@@ -2,13 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SpaceGameSignalRDemo.Model
+namespace SpaceGameDataModel
 {
 	public class Player
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
+
+		public string ConnectionId { get; set; }
 
 		public string Login { get; set; }
 
@@ -20,5 +22,6 @@ namespace SpaceGameSignalRDemo.Model
 		public Guid ShipId { get; set; }
 
 		public SpaceObject Ship { get; set; }
+		public bool Active { get; set; }
 	}
 }

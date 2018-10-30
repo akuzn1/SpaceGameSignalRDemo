@@ -1,4 +1,4 @@
-﻿namespace SpaceGameSignalRDemo.Model
+﻿namespace SpaceGameDataModel
 {
 	public enum ObjectType
 	{

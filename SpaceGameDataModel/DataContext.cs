@@ -1,21 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SpaceGameSignalRDemo.Model
+namespace SpaceGameDataModel
 {
 	public class DataContext : DbContext
 	{
-		private static bool _created = false;
 		public DataContext()
 		{
-			if (!_created)
+		}
+
+		public DataContext(string path, bool createNew = false)
+		{
+			dbPath = path;
+			if (createNew)
 			{
-				_created = true;
 				Database.EnsureDeleted();
 				Database.EnsureCreated();
+				//DataInitializer.Initialize(dbPath);
 			}
 		}
 
-		string dbPath = ".\\data.db";
+		string dbPath = "..\\data.db";
 
 		public DbSet<SpaceObject> SpaceObjects { get; set; }
 		public DbSet<Player> Players { get; set; }
