@@ -14,7 +14,9 @@ namespace SpaceGameSignalRDemo.Hubs
 
 		public async Task TakeCommand(Guid playerId, Guid objectId)
 		{
-			await Clients.All.SendAsync("TakeMessage", GameLogic.Take(playerId, objectId));
+			var res = GameLogic.Take(playerId, objectId);
+			if(res != null)
+				await Clients.All.SendAsync("TakeMessage", res);
 		}
 
 		public async Task NewPlayerCommand(Guid playerId)

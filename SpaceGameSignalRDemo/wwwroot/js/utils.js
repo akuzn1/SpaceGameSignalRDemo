@@ -7,10 +7,10 @@
 			}
 		},
 
-		removeItem: function (array, id) {
-			for (var i in array) {
-				if (array[i].id == id) {
-					array.splice(i, 1);
+		removeItem: function (spaceObjects, id) {
+			for (var i in spaceObjects) {
+				if (spaceObjects[i].id == id) {
+					spaceObjects.splice(i, 1);
 					break;
 				}
 			}
@@ -51,6 +51,15 @@
 				}
 			} 
 			return result;
+		},
+
+		find: function (x, y, spaceObjects) {
+			for (var i in spaceObjects) {
+				var D = Math.sqrt((x - spaceObjects[i].x) * (x - spaceObjects[i].x) + (y - spaceObjects[i].y) * (y - spaceObjects[i].y));
+				if (D <= 20) {
+					return spaceObjects[i];
+				}
+			}
 		},
 	}
 })();

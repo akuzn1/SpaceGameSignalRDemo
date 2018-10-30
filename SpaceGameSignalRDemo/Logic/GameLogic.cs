@@ -94,9 +94,38 @@ namespace SpaceGameSignalRDemo.Logic
 			}
 		}
 
-		internal static CancellationToken Take(Guid playerId, Guid objectId)
+		internal static TakeMessage Take(Guid playerId, Guid objectId)
 		{
-			throw new NotImplementedException();
+			using (var context = new DataContext())
+			{
+				var player = context.Players.Include(p => p.Ship).FirstOrDefault(p => p.Id == playerId);
+				if (player == null)
+					throw new ArgumentException(string.Format("Player with Id {0} was not found", playerId));
+
+				var objs = context.SpaceObjects.Select(p => p.Id);
+				var asteroid = context.SpaceObjects.FirstOrDefault(p => p.Id == objectId);
+				if (asteroid == null)
+					return null;
+
+				if (asteroid.Type != ObjectType.Asteroid1 && asteroid.Type != ObjectType.Asteroid2 && asteroid.Type != ObjectType.Asteroid3)
+					return null;
+
+				player.Expirience += asteroid.Life;
+				if (player.Expirience >= Constants.NewLevel && player.Ship.Type == ObjectType.Ship1)
+					player.Ship.Type = ObjectType.Ship2;
+
+				var message = new TakeMessage()
+				{
+					RemovedObjectId = asteroid.Id,
+					TakedBy = player.Ship,
+				};
+
+				context.SpaceObjects.Remove(asteroid);
+
+				context.SaveChanges();
+
+				return message;
+			}
 		}
 
 		public static MoveMessage Move(Guid playerId, int targetX, int targetY)

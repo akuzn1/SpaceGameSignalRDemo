@@ -27,6 +27,14 @@
 				player.y = moveData.y;
 				var ship = Utils.getShipById(spaceObjects, moveData.shipId);
 				Game.moveShipTo(ship, moveData.targetX, moveData.targetY, moveData.speed);
+				Game.redraw();
+			});
+
+			connection.on("TakeMessage", function (takeData) {
+				Utils.removeItem(spaceObjects, takeData.removedObjectId);
+				var obj = Utils.getSpaceObjectById(takeData.takedBy.id, spaceObjects);
+				obj.type = takeData.takedBy.type;
+				Game.redraw();
 			});
 
 			connection.on("ObjectAdded", function (newObjects) {
@@ -57,12 +65,22 @@
 				var x = e.clientX - rect.left;
 				var y = e.clientY - rect.top;
 
-				var intersectedObjects = Utils.intersect(x, y, spaceObjects);
-				if (intersectedObjects.length == 0) {
+				var intersectedObject = Utils.find(x, y, spaceObjects);
+				if (intersectedObject == undefined) {
 					connection.invoke("MoveCommand", player.id, x, y).catch(function (err) {
 						return console.error(err.toString());
-					});					
-				}				
+					});
+				}
+				else if (intersectedObject.type == 0 || intersectedObject.type == 1 || intersectedObject.type == 2) {
+					connection.invoke("TakeCommand", player.id, intersectedObject.id).catch(function (err) {
+						return console.error(err.toString());
+					});
+				}
+				//else if (intersectedObject.type == 3 || intersectedObject.type == 4) {
+				//	connection.invoke("AttackCommand", player.id, x, y).catch(function (err) {
+				//		return console.error(err.toString());
+				//	});
+				//}
 			});
 
 			for (var i = 0; i < paths.length; i++) {

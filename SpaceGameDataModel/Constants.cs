@@ -7,5 +7,6 @@
 		public const int MapHeight = 1000;
 		public const int ObjectSize = 64;
 		public const int MinAsteroidsPerLevel = 50;
+		public const int NewLevel = 100;
 	}
 }

@@ -42,6 +42,7 @@ namespace SpaceGameProcessor
 							var newObjects = new List<SpaceObject>();
 							for (int j = 0; j < rnd.Next(5); j++)
 							{
+								var asteroidType = GetAsteroidType();
 								var asteroid = new SpaceObject()
 								{
 									Id = Guid.NewGuid(),
@@ -50,9 +51,9 @@ namespace SpaceGameProcessor
 									Width = Constants.ObjectSize,
 									Height = Constants.ObjectSize,
 									Level = i,
+									Type = asteroidType,
+									Life = GetAsteroidLife(asteroidType),
 									Visible = true,
-									Life = 100,
-									Type = GetAsteroidType(),
 								};
 								context.SpaceObjects.Add(asteroid);
 								newObjects.Add(asteroid);
@@ -80,7 +81,17 @@ namespace SpaceGameProcessor
 					Thread.Sleep(50);
 				}
 			}
-		
+
+		private static int GetAsteroidLife(ObjectType type)
+		{
+			switch (type)
+			{
+				case ObjectType.Asteroid1: return 10;
+				case ObjectType.Asteroid2: return 20;
+				case ObjectType.Asteroid3: return 30;
+				default: throw new ArgumentException("Invalid asteroid type");
+			}
+		}
 
 		private static ObjectType GetAsteroidType()
 		{
@@ -88,7 +99,7 @@ namespace SpaceGameProcessor
 			switch(typeId)
 			{
 				case 0: return ObjectType.Asteroid1;
-				case 1: return ObjectType.Asteroid1;
+				case 1: return ObjectType.Asteroid2;
 				default: return ObjectType.Asteroid3;
 			}
 		}
