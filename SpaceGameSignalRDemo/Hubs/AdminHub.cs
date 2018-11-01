@@ -31,6 +31,8 @@ namespace SpaceGameSignalRDemo.Hubs
 			var ship = GameLogic.GetPlayerShipById(player.Id);
 			await _gameHubContext.Clients.GroupExcept("Level" + (player.SpaceLevel - 1), new List<string>() { player.ConnectionId })
 				.SendAsync("ObjectRemoved", new PlayerInfo(player));
+			await _gameHubContext.Groups.RemoveFromGroupAsync(player.ConnectionId, "Level" + (player.SpaceLevel - 1));
+			await _gameHubContext.Groups.AddToGroupAsync(player.ConnectionId, "Level" + player.SpaceLevel);
 
 			await _gameHubContext.Clients.Client(player.ConnectionId).SendAsync("Jump");
 		}

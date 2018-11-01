@@ -44,7 +44,8 @@ namespace SpaceGameSignalRDemo.Logic
 				}
 				else
 				{
-					player.Ship.Visible = true;
+					var ship = GetPlayerShipById(player.Id);
+					ship.Visible = true;
 				}
 				context.SaveChanges();
 

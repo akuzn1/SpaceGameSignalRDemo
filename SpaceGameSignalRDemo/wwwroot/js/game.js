@@ -102,36 +102,6 @@
 			player = new Player(name);
 
 			Game.loadLayer(name);
-			//$.ajax({
-			//	type: 'POST',
-			//	accepts: 'application/json',
-			//	url: 'api/game',
-			//	data: JSON.stringify(name),
-			//	contentType: 'application/json',
-			//	success: function (data) {
-			//		player.id = data.player.id;
-			//		player.expirience = data.player.experience;
-			//		player.shipId = data.player.shipId;
-			//		player.spaceLevel = data.player.spaceLevel;
-
-			//		for (var item in data.spaceObjects) {
-			//			spaceObjects[spaceObjects.length] = data.spaceObjects[item];
-			//		}
-
-			//		connection.start()
-			//			.then(function () {
-			//				connection.invoke("NewPlayerCommand", player.id);
-			//			})
-			//			.catch(function (err) {
-			//				return console.error(err.toString());
-			//			});
-
-			//		background.onload = function () {
-			//			Game.resizeCanvas();
-			//		}
-			//		background.src = 'images/backgrounds/space' + player.spaceLevel + '.jpg';
-			//	}
-			//});
 		},
 
 		loadLayer: function (name) {
@@ -147,6 +117,7 @@
 					player.shipId = data.player.shipId;
 					player.spaceLevel = data.player.spaceLevel;
 
+					spaceObjects = [];
 					for (var item in data.spaceObjects) {
 						spaceObjects[spaceObjects.length] = data.spaceObjects[item];
 					}
