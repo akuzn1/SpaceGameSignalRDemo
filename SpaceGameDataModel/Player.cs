@@ -16,7 +16,7 @@ namespace SpaceGameDataModel
 
 		public int Expirience { get; set; }
 
-		public int Level { get; set; }
+		public int SpaceLevel { get; set; }
 
 		[ForeignKey("SpaceObject")]
 		public Guid ShipId { get; set; }

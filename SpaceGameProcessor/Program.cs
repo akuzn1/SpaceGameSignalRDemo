@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using SpaceGameDataModel;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace SpaceGameProcessor
 				{
 					for (int i = 1; i <= Constants.LevelCount; i++)
 					{
-						var asteroidsCount = context.SpaceObjects.Count(p => p.Visible && p.Level == i && (p.Type == ObjectType.Asteroid1 || p.Type == ObjectType.Asteroid2 || p.Type == ObjectType.Asteroid3));
+						var asteroidsCount = context.SpaceObjects.Count(p => p.Visible && p.SpaceLevel == i && (p.Type == ObjectType.Asteroid1 || p.Type == ObjectType.Asteroid2 || p.Type == ObjectType.Asteroid3));
 						if (asteroidsCount < Constants.MinAsteroidsPerLevel)
 						{
 							var newObjects = new List<SpaceObject>();
@@ -50,7 +51,7 @@ namespace SpaceGameProcessor
 									Y = Constants.ObjectSize * rnd.Next(Constants.MapWidth / Constants.ObjectSize) + Constants.ObjectSize / 2,
 									Width = Constants.ObjectSize,
 									Height = Constants.ObjectSize,
-									Level = i,
+									SpaceLevel = i,
 									Type = asteroidType,
 									Life = GetAsteroidLife(asteroidType),
 									Visible = true,
@@ -59,9 +60,9 @@ namespace SpaceGameProcessor
 								newObjects.Add(asteroid);
 							}
 							context.SaveChanges();
-							connection.InvokeAsync("AddObjects", newObjects);
+							connection.InvokeAsync("AddObjects", i, newObjects);
 						}
-						var moveObjects = context.SpaceObjects.Where(p => p.Speed >= 1 && p.Level == i && p.Visible).ToList();
+						var moveObjects = context.SpaceObjects.Where(p => p.Speed >= 1 && p.SpaceLevel == i && p.Visible).ToList();
 						if (moveObjects.Count() != 0)
 						{
 							foreach (var item in moveObjects)
@@ -69,12 +70,40 @@ namespace SpaceGameProcessor
 								Console.WriteLine("1. ({0}, {1}) - ({2}, {3}), {4}, {5}", item.X, item.Y, item.TargetX, item.TargetY, item.Speed, item.Id);
 							}
 							UpdatePositions(moveObjects);
+
+							var portals = context.SpaceObjects.Where(p => p.Type == ObjectType.SpacePortal && p.SpaceLevel == i);
+							if(portals != null)
+							{
+								foreach (var portal in portals)
+								{
+									foreach (var item in moveObjects)
+									{
+										if (item.Type == ObjectType.SpacePortal)
+											continue;
+										var D = Math.Sqrt((portal.X - item.X) * (portal.X - item.X) + (portal.Y - item.Y) * (portal.Y - item.Y));
+										if (D < 50 && item.SpaceLevel < Constants.LevelCount)
+										{
+											item.SpaceLevel += 1;
+											item.TargetX = item.X;
+											item.TargetY = item.Y;
+											item.Speed = 0;
+											context.SaveChanges();
+
+											var player = context.Players.Include(p => p.Ship).FirstOrDefault(p => p.ShipId == item.Id);
+											player.SpaceLevel += 1;
+
+											connection.InvokeAsync("PlayerJump", player);
+										}
+									}
+								}
+							}
+
 							foreach (var item in moveObjects)
 							{
 								Console.WriteLine("2. ({0}, {1}) - ({2}, {3}), {4}, {5}", item.X, item.Y, item.TargetX, item.TargetY, item.Speed, item.Id);
 							}
 							context.SaveChanges();
-							connection.InvokeAsync("MoveObjects", moveObjects);
+							connection.InvokeAsync("MoveObjects", i, moveObjects.Where(p => p.SpaceLevel == i));
 						}
 					}
 				}

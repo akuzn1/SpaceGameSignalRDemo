@@ -10,5 +10,6 @@ namespace SpaceGameSignalRDemo.Model.Messages
 		public int TargetX { get; internal set; }
 		public int TargetY { get; internal set; }
 		public int Speed { get; internal set; }
+		public int Level { get; internal set; }
 	}
 }

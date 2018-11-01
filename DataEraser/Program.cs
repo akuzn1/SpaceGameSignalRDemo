@@ -9,7 +9,8 @@ namespace DataEraser
 			var dbPath = "..\\..\\..\\..\\data.db";
 			using (DataContext context = new DataContext(dbPath, true))
 			{
-
+				DataInitializer.Initialize(context);
+				context.SaveChanges();
 			}
 		}
 	}

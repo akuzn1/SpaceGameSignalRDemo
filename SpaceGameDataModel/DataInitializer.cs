@@ -5,22 +5,10 @@ namespace SpaceGameDataModel
 {
 	public static class DataInitializer
 	{
-		public static void Initialize(string dbPath)
+		public static void Initialize(DataContext context)
 		{
-			using (var context = new DataContext(dbPath))
-			{
-				if(context.SpaceObjects.Any())
-				{
-					return;
-				}
-
-				context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 100, Y = 100, Width = 64, Height = 64, Level = 1, Visible = true, Life = 100, Type = ObjectType.Asteroid1 });
-				context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 100, Y = 200, Width = 64, Height = 64, Level = 1, Visible = true, Life = 100, Type = ObjectType.Asteroid2 });
-				context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 200, Y = 100, Width = 64, Height = 64, Level = 1, Visible = true, Life = 100, Type = ObjectType.Asteroid2 });
-				context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 200, Y = 200, Width = 64, Height = 64, Level = 1, Visible = true, Life = 100, Type = ObjectType.Asteroid1 });
-
-				context.SaveChanges();
-			}
+			context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 10, Y = 10, Width = 300, Height = 300, SpaceLevel = 1, Visible = true, Life = 100, Type = ObjectType.SpacePortal });
+			//context.SpaceObjects.Add(new SpaceObject() { Id = Guid.NewGuid(), X = 10, Y = 10, Width = 300, Height = 300, SpaceLevel = 2, Visible = true, Life = 100, Type = ObjectType.SpacePortal });
 		}
 	}
 }

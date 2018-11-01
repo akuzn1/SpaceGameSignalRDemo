@@ -29,7 +29,7 @@ namespace SpaceGameDataModel
 
 		public int Life { get; set; }
 
-		public int Level { get; set; }
+		public int SpaceLevel { get; set; }
 
 		public bool Visible { get; set; }
 

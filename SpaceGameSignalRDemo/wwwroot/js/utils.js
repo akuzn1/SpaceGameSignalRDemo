@@ -56,7 +56,7 @@
 		find: function (x, y, spaceObjects) {
 			for (var i in spaceObjects) {
 				var D = Math.sqrt((x - spaceObjects[i].x) * (x - spaceObjects[i].x) + (y - spaceObjects[i].y) * (y - spaceObjects[i].y));
-				if (D <= 20) {
+				if (D <= spaceObjects[i].width / 2) {
 					return spaceObjects[i];
 				}
 			}

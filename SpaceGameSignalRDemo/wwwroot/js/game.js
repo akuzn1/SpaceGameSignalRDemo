@@ -1,5 +1,6 @@
 ﻿var Game = (function () {
-	var mainCanvas = document.getElementById("mainCanvas");
+	//var mainCanvas = document.getElementById("mainCanvas");
+	//var ctx = mainCanvas.getContext('2d');
 	var background = new Image();
 	var player;
 	var ship;
@@ -11,6 +12,9 @@
 		'images/asteroids/asteroid3.png',
 		'images/ships/ship1.png',
 		'images/ships/ship2.png',
+		'images/ships/ship3.png',
+		'images/ships/ship4.png',
+		'images/stations/portal.png',
 	];
 
 	var connection;
@@ -44,6 +48,10 @@
 				}				
 			});
 
+			connection.on("Jump", function () {
+				Game.loadLayer(player.name);
+			});
+
 			connection.on("ObjectUpdated", function (updatedObjects) {
 				for (var i in updatedObjects) {
 					var obj = Utils.getSpaceObjectById(updatedObjects[i].id, spaceObjects);
@@ -66,21 +74,18 @@
 				var y = e.clientY - rect.top;
 
 				var intersectedObject = Utils.find(x, y, spaceObjects);
-				if (intersectedObject == undefined) {
-					connection.invoke("MoveCommand", player.id, x, y).catch(function (err) {
-						return console.error(err.toString());
-					});
-				}
-				else if (intersectedObject.type == 0 || intersectedObject.type == 1 || intersectedObject.type == 2) {
+
+				if (intersectedObject != undefined && (intersectedObject.type == 0 || intersectedObject.type == 1 || intersectedObject.type == 2)) {
 					connection.invoke("TakeCommand", player.id, intersectedObject.id).catch(function (err) {
 						return console.error(err.toString());
 					});
 				}
-				//else if (intersectedObject.type == 3 || intersectedObject.type == 4) {
-				//	connection.invoke("AttackCommand", player.id, x, y).catch(function (err) {
-				//		return console.error(err.toString());
-				//	});
-				//}
+				else
+				{
+					connection.invoke("MoveCommand", player.id, x, y).catch(function (err) {
+						return console.error(err.toString());
+					});
+				}
 			});
 
 			for (var i = 0; i < paths.length; i++) {
@@ -96,6 +101,40 @@
 			var name = prompt("Enter your name...");
 			player = new Player(name);
 
+			Game.loadLayer(name);
+			//$.ajax({
+			//	type: 'POST',
+			//	accepts: 'application/json',
+			//	url: 'api/game',
+			//	data: JSON.stringify(name),
+			//	contentType: 'application/json',
+			//	success: function (data) {
+			//		player.id = data.player.id;
+			//		player.expirience = data.player.experience;
+			//		player.shipId = data.player.shipId;
+			//		player.spaceLevel = data.player.spaceLevel;
+
+			//		for (var item in data.spaceObjects) {
+			//			spaceObjects[spaceObjects.length] = data.spaceObjects[item];
+			//		}
+
+			//		connection.start()
+			//			.then(function () {
+			//				connection.invoke("NewPlayerCommand", player.id);
+			//			})
+			//			.catch(function (err) {
+			//				return console.error(err.toString());
+			//			});
+
+			//		background.onload = function () {
+			//			Game.resizeCanvas();
+			//		}
+			//		background.src = 'images/backgrounds/space' + player.spaceLevel + '.jpg';
+			//	}
+			//});
+		},
+
+		loadLayer: function (name) {
 			$.ajax({
 				type: 'POST',
 				accepts: 'application/json',
@@ -106,7 +145,7 @@
 					player.id = data.player.id;
 					player.expirience = data.player.experience;
 					player.shipId = data.player.shipId;
-					player.level = data.player.level;
+					player.spaceLevel = data.player.spaceLevel;
 
 					for (var item in data.spaceObjects) {
 						spaceObjects[spaceObjects.length] = data.spaceObjects[item];
@@ -118,19 +157,14 @@
 						})
 						.catch(function (err) {
 							return console.error(err.toString());
-						});								
+						});
 
 					background.onload = function () {
 						Game.resizeCanvas();
 					}
-					background.src = 'images/backgrounds/space' + player.level + '.jpg';
+					background.src = 'images/backgrounds/space' + player.spaceLevel + '.jpg';
 				}
 			});
-
-			//setInterval(function () {
-			//	Utils.recalculatePositions(spaceObjects);
-			//	Game.redraw();
-			//}, 50);
 		},
 
 		moveShipTo: function (ship, x, y, speed) {
@@ -142,6 +176,7 @@
 		},
 
 		redraw: function () {
+			var mainCanvas = document.getElementById("mainCanvas");
 			var ctx = mainCanvas.getContext('2d');
 			ctx.drawImage(background,
 				0, 0, background.naturalHeight, background.naturalHeight,

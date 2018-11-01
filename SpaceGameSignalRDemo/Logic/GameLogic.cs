@@ -22,7 +22,7 @@ namespace SpaceGameSignalRDemo.Logic
 					player = new Player() {
 						Id = Guid.NewGuid(),
 						Login = playerName,
-						Level = 1,
+						SpaceLevel = 1,
 						Expirience = 0,
 					};
 					player.Ship = new SpaceObject()
@@ -34,8 +34,8 @@ namespace SpaceGameSignalRDemo.Logic
 						Height = 128,
 						TargetX = 0,
 						TargetY = 0,
-						Level = player.Level,
-						Visible = false,
+						SpaceLevel = player.SpaceLevel,
+						Visible = true,
 						Life = 100,
 						Speed = 0,
 						Type = ObjectType.Ship1
@@ -44,17 +44,36 @@ namespace SpaceGameSignalRDemo.Logic
 				}
 				else
 				{
-					player.Ship.Visible = false;
+					player.Ship.Visible = true;
 				}
 				context.SaveChanges();
 
 				var all = context.SpaceObjects;
-				var objects = context.SpaceObjects.Where(p => p.Level == player.Level && p.Visible).ToList();
+				var objects = context.SpaceObjects.Where(p => p.SpaceLevel == player.SpaceLevel && p.Visible).ToList();
 
 				state.Player = new PlayerInfo(player);
 				state.SpaceObjects = objects;
 
 				return state;
+			}
+		}
+
+		public static Player GetPlayerById(Guid playerId)
+		{
+			using (var context = new DataContext())
+			{
+				return context.Players.FirstOrDefault(p => p.Id == playerId);
+			}
+		}
+
+		public static SpaceObject GetPlayerShipById(Guid playerId)
+		{
+			using (var context = new DataContext())
+			{
+				var player = context.Players.Include(p => p.Ship).FirstOrDefault(p => p.Id == playerId);
+				if (player == null)
+					throw new ArgumentException(string.Format("Player with Id {0} was not found", playerId));
+				return player.Ship;
 			}
 		}
 
@@ -111,8 +130,7 @@ namespace SpaceGameSignalRDemo.Logic
 					return null;
 
 				player.Expirience += asteroid.Life;
-				if (player.Expirience >= Constants.NewLevel && player.Ship.Type == ObjectType.Ship1)
-					player.Ship.Type = ObjectType.Ship2;
+				player.Ship.Type = CalculateShipTypeByExpirience(player.Expirience);
 
 				var message = new TakeMessage()
 				{
@@ -125,6 +143,18 @@ namespace SpaceGameSignalRDemo.Logic
 				context.SaveChanges();
 
 				return message;
+			}
+		}
+
+		private static ObjectType CalculateShipTypeByExpirience(int expirience)
+		{
+			int level = expirience / Constants.ExpirienseForNewLevel;
+			switch (level)
+			{
+				case 0: return ObjectType.Ship1;
+				case 1: return ObjectType.Ship2;
+				case 2: return ObjectType.Ship3;
+				default: return ObjectType.Ship4;
 			}
 		}
 
@@ -142,7 +172,7 @@ namespace SpaceGameSignalRDemo.Logic
 				var ship = player.Ship;
 				ship.TargetX = targetX;
 				ship.TargetY = targetY;
-				ship.Speed = 5 + ship.Level * 2;
+				ship.Speed = 5 + ship.SpaceLevel * 2;
 				context.SaveChanges();
 
 				var message = new MoveMessage()
@@ -153,6 +183,7 @@ namespace SpaceGameSignalRDemo.Logic
 					TargetX = ship.TargetX,
 					TargetY = ship.TargetY,
 					Speed = ship.Speed,
+					Level = ship.SpaceLevel,
 				};
 
 				return message;

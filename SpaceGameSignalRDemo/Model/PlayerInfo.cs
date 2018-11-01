@@ -13,7 +13,7 @@ namespace SpaceGameSignalRDemo.Model
 			Id = player.Id;
 			Login = player.Login;
 			Expirience = player.Expirience;
-			Level = player.Level;
+			SpaceLevel = player.SpaceLevel;
 			ShipId = player.ShipId;
 		}
 
@@ -23,7 +23,7 @@ namespace SpaceGameSignalRDemo.Model
 
 		public int Expirience { get; set; }
 
-		public int Level { get; set; }
+		public int SpaceLevel { get; set; }
 
 		public Guid ShipId { get; set; }
 	}
