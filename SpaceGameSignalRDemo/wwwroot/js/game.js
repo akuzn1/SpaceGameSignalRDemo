@@ -149,9 +149,10 @@
 		redraw: function () {
 			var mainCanvas = document.getElementById("mainCanvas");
 			var ctx = mainCanvas.getContext('2d');
-			ctx.drawImage(background,
-				0, 0, background.naturalHeight, background.naturalHeight,
-				0, 0, mainCanvas.width, mainCanvas.width * background.naturalHeight / background.naturalHeight);
+			ctx.drawImage(background, 0, 0);
+			//ctx.drawImage(background,
+			//	0, 0, background.naturalHeight, background.naturalHeight,
+			//	0, 0, mainCanvas.width, mainCanvas.width * background.naturalHeight / background.naturalHeight);
 			for (var item in spaceObjects) {
 				ctx.drawImage(images[spaceObjects[item].type],
 					spaceObjects[item].x - spaceObjects[item].width / 2,
