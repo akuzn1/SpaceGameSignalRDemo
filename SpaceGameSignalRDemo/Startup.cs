@@ -58,7 +58,7 @@ namespace SpaceGameSignalRDemo
 			});
 			app.UseSignalR(routes =>
 			{
-				routes.MapHub<AdminHub>("/adminHub");
+				routes.MapHub<ServiceHub>("/serviceHub");
 			});
 
 			app.UseMvc();

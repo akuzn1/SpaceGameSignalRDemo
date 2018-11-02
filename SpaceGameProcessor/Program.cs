@@ -27,7 +27,7 @@ namespace SpaceGameProcessor
 
 				HubConnection connection;
 				connection = new HubConnectionBuilder()
-					.WithUrl("http://localhost:51582/AdminHub")
+					.WithUrl("http://localhost:51582/ServiceHub")
 					.Build();
 				connection.StartAsync().Wait();
 
@@ -102,7 +102,15 @@ namespace SpaceGameProcessor
 							{
 								Console.WriteLine("2. ({0}, {1}) - ({2}, {3}), {4}, {5}", item.X, item.Y, item.TargetX, item.TargetY, item.Speed, item.Id);
 							}
-							context.SaveChanges();
+							try
+							{
+								context.SaveChanges();
+							}
+							catch(Exception ex)
+							{
+								Console.WriteLine(ex.Message);
+								continue;
+							}
 							connection.InvokeAsync("MoveObjects", i, moveObjects.Where(p => p.SpaceLevel == i));
 						}
 					}

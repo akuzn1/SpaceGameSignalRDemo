@@ -2,16 +2,15 @@
 using SpaceGameDataModel;
 using SpaceGameSignalRDemo.Logic;
 using SpaceGameSignalRDemo.Model;
-using SpaceGameSignalRDemo.Model.Messages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpaceGameSignalRDemo.Hubs
 {
-	public class AdminHub : Hub
+	public class ServiceHub : Hub
 	{
 		private readonly IHubContext<GameHub> _gameHubContext;
-		public AdminHub(IHubContext<GameHub> gameHubContext)
+		public ServiceHub(IHubContext<GameHub> gameHubContext)
 		{
 			_gameHubContext = gameHubContext;
 		}
