@@ -22,6 +22,7 @@ namespace SpaceGameSignalRDemo.Logic
 					player = new Player() {
 						Id = Guid.NewGuid(),
 						Login = playerName,
+						Active = true,
 						SpaceLevel = 1,
 						Expirience = 0,
 					};

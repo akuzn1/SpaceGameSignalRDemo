@@ -22,7 +22,7 @@ namespace SpaceGameSignalRDemo.Hubs
 
 		public async Task MoveObjects(int level, List<SpaceObject> objects)
 		{
-			await _gameHubContext.Clients.Group("Level" + level).SendAsync("ObjectUpdated", objects);
+			await _gameHubContext.Clients.Group("Level" + level).SendAsync("ObjectsUpdated", objects);
 		}
 
 		public async Task PlayerJump(Player player)

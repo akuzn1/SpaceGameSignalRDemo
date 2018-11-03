@@ -47,7 +47,7 @@
 				Game.loadLayer(player.name);
 			});
 
-			connection.on("ObjectUpdated", function (updatedObjects) {
+			connection.on("ObjectsUpdated", function (updatedObjects) {
 				for (var i in updatedObjects) {
 					var obj = spaceObjects.getById(updatedObjects[i].id);
 					if (obj != undefined) {
