@@ -1,10 +1,8 @@
 ﻿var Game = (function () {
-	//var mainCanvas = document.getElementById("mainCanvas");
-	//var ctx = mainCanvas.getContext('2d');
 	var background = new Image();
 	var player;
 	var ship;
-	var spaceObjects = [];
+	var spaceObjects = new SpaceObjects();
 	var images = [];
 	var paths = [
 		'images/asteroids/asteroid1.png',
@@ -29,23 +27,20 @@
 			connection.on("MoveMessage", function (moveData) {
 				player.x = moveData.x;
 				player.y = moveData.y;
-				var ship = Utils.getShipById(spaceObjects, moveData.shipId);
+				var ship = spaceObjects.getById(moveData.shipId);
 				Game.moveShipTo(ship, moveData.targetX, moveData.targetY, moveData.speed);
 				Game.redraw();
 			});
 
 			connection.on("TakeMessage", function (takeData) {
-				Utils.removeItem(spaceObjects, takeData.removedObjectId);
-				var obj = Utils.getSpaceObjectById(takeData.takedBy.id, spaceObjects);
+				spaceObjects.removeById(takeData.removedObjectId);
+				var obj = spaceObjects.getById(takeData.takedBy.id);
 				obj.type = takeData.takedBy.type;
 				Game.redraw();
 			});
 
 			connection.on("ObjectAdded", function (newObjects) {
-				for (var i in newObjects) {
-					if (Utils.getSpaceObjectById(newObjects[i].id, spaceObjects) == undefined)
-						spaceObjects[spaceObjects.length] = newObjects[i];
-				}				
+				spaceObjects.addMany(newObjects);	
 			});
 
 			connection.on("Jump", function () {
@@ -54,7 +49,7 @@
 
 			connection.on("ObjectUpdated", function (updatedObjects) {
 				for (var i in updatedObjects) {
-					var obj = Utils.getSpaceObjectById(updatedObjects[i].id, spaceObjects);
+					var obj = spaceObjects.getById(updatedObjects[i].id);
 					if (obj != undefined) {
 						obj.x = updatedObjects[i].x;
 						obj.y = updatedObjects[i].y;
@@ -65,7 +60,7 @@
 			});
 
 			connection.on("ObjectRemoved", function (spaceObject) {
-				Utils.removeItem(spaceObjects, spaceObject.id)
+				spaceObjects.removeById(spaceObject.id)
 			});
 
 			$('#mainCanvas').on('mousedown', function (e) {
@@ -73,7 +68,7 @@
 				var x = e.clientX - rect.left;
 				var y = e.clientY - rect.top;
 
-				var intersectedObject = Utils.find(x, y, spaceObjects);
+				var intersectedObject = spaceObjects.find(x, y);
 
 				if (intersectedObject != undefined && (intersectedObject.type == 0 || intersectedObject.type == 1 || intersectedObject.type == 2)) {
 					connection.invoke("TakeCommand", player.id, intersectedObject.id).catch(function (err) {
@@ -102,6 +97,13 @@
 			player = new Player(name);
 
 			Game.loadLayer(name);
+			connection.start()
+				.then(function () {
+					connection.invoke("NewPlayerCommand", player.id);
+				})
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
 		},
 
 		loadLayer: function (name) {
@@ -117,18 +119,8 @@
 					player.shipId = data.player.shipId;
 					player.spaceLevel = data.player.spaceLevel;
 
-					spaceObjects = [];
-					for (var item in data.spaceObjects) {
-						spaceObjects[spaceObjects.length] = data.spaceObjects[item];
-					}
-
-					connection.start()
-						.then(function () {
-							connection.invoke("NewPlayerCommand", player.id);
-						})
-						.catch(function (err) {
-							return console.error(err.toString());
-						});
+					spaceObjects.erase();
+					spaceObjects.addMany(data.spaceObjects);
 
 					background.onload = function () {
 						Game.resizeCanvas();
@@ -150,10 +142,11 @@
 			var mainCanvas = document.getElementById("mainCanvas");
 			var ctx = mainCanvas.getContext('2d');
 			ctx.drawImage(background, 0, 0);
-			for (var item in spaceObjects) {
-				ctx.drawImage(images[spaceObjects[item].type],
-					spaceObjects[item].x - spaceObjects[item].width / 2,
-					spaceObjects[item].y - spaceObjects[item].height / 2);
+			var items = spaceObjects.getItems();
+			for (var item in items) {
+				ctx.drawImage(images[items[item].type],
+					items[item].x - items[item].width / 2,
+					items[item].y - items[item].height / 2);
 			}
 		},
 
