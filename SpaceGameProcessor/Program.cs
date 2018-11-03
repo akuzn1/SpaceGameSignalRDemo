@@ -25,14 +25,14 @@ namespace SpaceGameProcessor
 			if (args.Length == 2)
 				createNew = bool.Parse(args[1]);
 
-				HubConnection connection;
-				connection = new HubConnectionBuilder()
-					.WithUrl("http://localhost:51582/ServiceHub")
-					.Build();
-				connection.StartAsync().Wait();
+			HubConnection connection;
+			connection = new HubConnectionBuilder()
+				.WithUrl("http://localhost:51582/ServiceHub")
+				.Build();
+			connection.StartAsync().Wait();
 
-				while (true)
-				{
+			while (true)
+			{
 				using (DataContext context = new DataContext(dbPath, createNew))
 				{
 					for (int level = 1; level <= Constants.LevelCount; level++)
@@ -66,9 +66,9 @@ namespace SpaceGameProcessor
 						}
 					}
 				}
-					Thread.Sleep(50);
-				}
+				Thread.Sleep(50);
 			}
+		}
 
 		private static void JumpShips(HubConnection connection, DataContext context, int level, List<SpaceObject> moveObjects)
 		{
