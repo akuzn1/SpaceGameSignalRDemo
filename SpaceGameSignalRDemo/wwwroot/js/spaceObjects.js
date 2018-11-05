@@ -26,12 +26,30 @@
 		},
 
 		add: function (object) {
-			objects[objectbjects.length] = object;
+			var canAdded = true;
+			for (var j in objects) {
+				if (object.id == objects[j].id) {
+					canAdded = false;
+					break;
+				}
+			}
+			if (canAdded) {
+				objects[objectbjects.length] = object;
+			}
 		},
 
 		addMany: function (objectList) {
 			for (var i in objectList) {
-				objects[objects.length] = objectList[i];
+				var canAdded = true;
+				for (var j in objects) {
+					if (objectList[i].id == objects[j].id) {
+						canAdded = false;
+						break;
+					}
+				}
+				if (canAdded) {
+					objects[objects.length] = objectList[i];
+				}
 			}
 		},
 

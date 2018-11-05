@@ -15,7 +15,6 @@ namespace SpaceGameDataModel
 			{
 				Database.EnsureDeleted();
 				Database.EnsureCreated();
-				//DataInitializer.Initialize(dbPath);
 			}
 		}
 

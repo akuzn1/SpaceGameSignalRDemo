@@ -97,13 +97,6 @@
 			player = new Player(name);
 
 			Game.loadLayer(name);
-			connection.start()
-				.then(function () {
-					connection.invoke("NewPlayerCommand", player.id);
-				})
-				.catch(function (err) {
-					return console.error(err.toString());
-				});
 		},
 
 		loadLayer: function (name) {
@@ -121,6 +114,14 @@
 
 					spaceObjects.erase();
 					spaceObjects.addMany(data.spaceObjects);
+
+					connection.start()
+						.then(function () {
+							connection.invoke("NewPlayerCommand", player.id);
+						})
+						.catch(function (err) {
+							return console.error(err.toString());
+						});
 
 					background.onload = function () {
 						Game.resizeCanvas();
@@ -147,7 +148,7 @@
 				ctx.drawImage(images[items[item].type],
 					items[item].x - items[item].width / 2,
 					items[item].y - items[item].height / 2);
-			}
+			}			
 		},
 
 		resizeCanvas: function () {

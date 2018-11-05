@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SpaceGameDataModel;
 using SpaceGameSignalRDemo.Logic;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SpaceGameSignalRDemo.Hubs
@@ -26,7 +28,7 @@ namespace SpaceGameSignalRDemo.Hubs
 			if (player != null)
 			{
 				await Groups.AddToGroupAsync(Context.ConnectionId, "Level" + player.SpaceLevel);
-				GameLogic.Link(playerId, Context.ConnectionId);
+				await Clients.Group("Level" + player.SpaceLevel).SendAsync("ObjectAdded", GameLogic.Link(playerId, Context.ConnectionId));
 			}
 		}
 

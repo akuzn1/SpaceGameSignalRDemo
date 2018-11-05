@@ -32,9 +32,7 @@ namespace SpaceGameSignalRDemo.Controllers
 		[HttpPost]
 		public ActionResult<GameState> Index([FromBody] string name)
 		{
-			GameState state = GameLogic.StartGame(name);
-			_gameHubContext.Clients.Group("Level" + state.Player.SpaceLevel)
-				.SendAsync("ObjectAdded", new List<SpaceObject>() { GameLogic.GetPlayerShipById(state.Player.Id) });
+			GameState state = GameLogic.StartGame(name);			
 			return state;
 		}
 	}
