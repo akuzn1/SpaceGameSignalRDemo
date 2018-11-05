@@ -1,6 +1,10 @@
 # SpaceGameSignalRDemo
 Basic space game for demonstrating SignalR opportunities
 
+How to start:
+1. Run web applications SpaceGameSignalRDemo
+2. Run SpaceGameProcessor for starting recalculating positions
+
 Used libs
 SignalR, jQuery
 
